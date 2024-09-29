@@ -2,7 +2,7 @@ local module = {}
 
 module.Parts = {}
 function module.Parts:DisableCollision(part1, part2)
-	local NoCollision = Instance.new("NoCollisionConstraint")
+	local NoCollision = Instance.new("NoCollisionConstraint", part1)
 	NoCollision.Part0 = part1
 	NoCollision.Part1 = part2
 	return NoCollision
