@@ -15,7 +15,9 @@ module.Network.NetworkAccess = function()
 		for _, Players in next, game:GetService("Players"):GetPlayers() do
 			if Players ~= game:GetService("Players").LocalPlayer then
 				Players.MaximumSimulationRadius = 0
-				sethiddenproperty(Players, "SimulationRadius", 0)
+				if sethiddenproperty then
+					sethiddenproperty(Players, "SimulationRadius", 0)
+				end
 			end
 		end
 		game:GetService("Players").LocalPlayer.MaximumSimulationRadius = math.pow(math.huge,math.huge)
