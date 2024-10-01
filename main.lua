@@ -25,7 +25,16 @@ function module.API:AbstractPhysProp(density, friction, elasticity, wfriction, w
 	assert(type(physprop.E) == "number", "Invalid argument #3 (expected number got ".. type(physprop.E).. ")")
 	assert(type(physprop.WF) == "number", "Invalid argument #4 (expected number got ".. type(physprop.WF).. ")")
 	assert(type(physprop.WE) == "number", "Invalid argument #5 (expected number got ".. type(physprop.WE).. ")")
-	
+
+	physprop.PhysicalProperties = function(self, index)
+		return PhysicalProperties.new(
+			math.clamp(self.D, 0.01, 100),
+			math.clamp(self.F, 0, 2),
+			math.clamp(self.E, 0, 1),
+			math.clamp(self.WF, 0, 100),
+			math.clamp(self.WE, 0, 100)
+		)
+	end
 	physprop.__index = function(self, index)
 		assert(type(index) == "string", "Invalid index (expected string got ".. type(index).. ")")
 		local lookup = {
@@ -73,12 +82,12 @@ function module.Parts:DisableCollision(part1, part2)
 end
 function module.Parts:SetMass(part, mass)
 	local density = part.Mass / mass
-	if density < 0.001 then
+	if density < 0.01 then
 		part.Massless = true
-	elseif density >= 0.001
+	else
 		local o = module.API:AbstractPhysProp(part.CurrentPhysicalProperties)
-		local n = PhysicalProperties.new(density, o.F, o.E, o.WF, o.WE)
-		part.CustomPhysicalProperties = n
+		local n = module.API:AbstractPhysProp(density, o.F, o.E, o.WF, o.WE)
+		part.CustomPhysicalProperties = n:PhysicalProperties()
 	end
 	
 	return part1.AssemblyMass
